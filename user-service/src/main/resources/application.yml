@@ -1,0 +1,54 @@
+spring:
+  application:
+    name: user-service
+  config:
+    import: "optional:configserver:"  
+    
+  datasource:
+    url: jdbc:mysql://localhost:3306/fitness-user?useSSL=false&createDatabaseIfNotExist=true
+    username: root
+    password: root
+   
+    
+logging:
+  file:
+    name: C:\LogFile\microservice.log
+  level:
+    com: 
+      technoelevate: 
+        user-service: INFO 
+          
+    
+#resilience4j:
+#  circuitbreaker:
+#    instances:   
+#      userService: 
+#        register-health-indicator: true
+#        event-consumer-buffer-size: 10
+#        automatic-transition-from-open-to-half-open-enabled: true
+#        failure-rate-threshold: 50
+#        minimum-number-of-calls: 5
+#        permitted-number-of-calls-in-half-open-state: 3
+#        sliding-window-size: 10
+#        wait-duration-in-open-state: 5s
+#        sliding-window-type: count-based
+        
+#management:
+#  health:
+#    circuitbreakers:
+#      enabled: true
+#  endpoints:
+#    web:
+#      exposure:
+#        include:
+#        - health
+#  endpoint:
+#    health:
+#      show-details: always                  
+  
+server:
+  port: 8050
+  
+steps.coin: 1000
+rupees.coin: 10  
+    

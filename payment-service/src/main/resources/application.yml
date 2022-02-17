@@ -1,0 +1,13 @@
+server:
+  port: 8084
+  
+spring:
+  application:
+    name: payment-service
+  config:
+    import: "optional:configserver:"   
+  datasource:
+    url: jdbc:mysql://localhost:3306/fitness-payment?useSSL=false&createDatabaseIfNotExist=true
+    username: root
+    password: root
+      

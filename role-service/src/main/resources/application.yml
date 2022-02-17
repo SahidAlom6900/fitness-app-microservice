@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: role-service
+  config:
+    import: "optional:configserver:"  
+    
+  datasource:
+    url: jdbc:mysql://localhost:3306/fitness-role?useSSL=false&createDatabaseIfNotExist=true
+    username: root
+    password: root
+  
+server:
+  port: 8250
+    

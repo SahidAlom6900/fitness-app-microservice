@@ -1,0 +1,151 @@
+server:
+  port: 8700
+  
+spring:
+  application:
+    name: api-gateway-server
+  config:
+    import: "optional:configserver:"
+  datasource:
+    url: jdbc:mysql://localhost:3306/fitness-api_gateway?useSSL=false&createDatabaseIfNotExist=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+     
+#  main:
+#    web-application-type: reactive  
+#    allow-bean-definition-overriding: true  
+     
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+      - id: user-service-8050
+        uri: lb://user-service/
+        predicates:
+        - Path=/api/v1/user/**
+        filters:
+#            - RewritePath=/api/v1/user/(?<path>/?.*), /${path}
+            - name: CircuitBreaker
+              args:
+                name: user-service
+                fallbackuri: forward:/userFallBack/user
+        
+        
+      - id: admin-service-8000
+        uri: lb://admin-service/
+        predicates:
+        - Path=/api/v1/admin/**
+        filters:
+#            - RewritePath=/api/v1/admin/(?<path>.*), /${path}
+            - name: CircuitBreaker
+              args:
+                name: admin-service
+                fallbackuri: forward:/adminFallBack/admin
+        
+      - id: role-service-8250
+        uri: lb://role-service/
+        predicates:
+        - Path=/api/v1/role/**
+        filters:
+#            - RewritePath=/api/v1/role/(?<path>.*), /${path}
+            - name: CircuitBreaker
+              args:
+                name: role-service
+                fallbackuri: forward:/roleFallBack/role
+        
+      - id: inventory-service-8085
+        uri: lb://inventory-service/
+        predicates:
+        - Path=/api/v1/product/**
+        filters:
+#            - RewritePath=/api/v1/product/(?<path>.*), /${path}
+            - name: CircuitBreaker
+              args:
+                name: inventory-service
+                fallbackuri: forward:/inventoryFallBack/inventory
+        
+      - id: order-service-8100
+        uri: lb://order-service/
+        predicates:
+        - Path=/api/v1/order/**
+        filters:
+#            - RewritePath=/api/v1/order/(?<path>.*), /${path}
+            - name: CircuitBreaker
+              args:
+                name: order-service
+                fallbackuri: forward:/orderFallBack/order
+        
+      - id: payment-service-8084
+        uri: lb://payment-service/
+        predicates:
+        - Path=/api/v1/account/**
+        filters:
+#           - RewritePath=/api/v1/account/(?<path>.*), /${path}
+           - name: CircuitBreaker
+             args:
+                name: payment-service
+                fallbackuri: forward:/paymentFallBack/payment
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+  instance:
+    hostname: localhost
+    
+
+#resilience4j:
+#  bulkhead:
+#    configs:
+#        default:
+#        max-concurrent-calls: 5
+#        max-wait-duration: 0
+#    
+#  circuitbreaker:
+#     configs:
+#        default:
+#        automatic-transition-from-open-to-half-open-enabled: true
+#        failure-rate-threshold: 80
+#        minimum-number-of-calls: 5
+#        permitted-number-of-calls-in-half-open-state: 4
+#        sliding-window-size: 10
+#        sliding-window-type: COUNT_BASED
+#        wait-duration-in-open-state: 10s
+#  ratelimiter:
+#     configs:
+#        default:
+#        limit-for-period: 2
+#        limit-refresh-period: 10s
+#        timeout-duration: 0
+#  retry:
+#     configs:
+#        default:
+#        enable-exponential-backoff: true
+#        max-attempts: 5
+#        retry-exceptions: org.springframework.web.client.ResourceAccessException
+#        wait-duration: 2s
+#  timelimiter:
+#     configs:
+#        default:
+#        cancel-running-future: false
+#        timeout-duration: 1s  
+#        
+#     instances:
+#       user-service:
+#            baseConfig: default
+#       admin-service:
+#            baseConfig: default
+#       role-service:
+#            baseConfig: default
+#       inventory-service:
+#            baseConfig: default 
+#       order-service:
+#            baseConfig: default
+#       payment-service:
+#            baseConfig: default             
+                  
